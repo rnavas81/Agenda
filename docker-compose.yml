@@ -1,0 +1,56 @@
+# Fichero de configuración para los contenedores del servidor de la aplicación Agenda
+version: "3.8"
+services:
+  # Contenedor para la persistencia de datos
+  agenda-db:
+    # La imagen del contenedor está preparada en dockerhub
+    build: ./Agenda-DB
+    # Nombre asignado al contenedor
+    container_name: agenda-db
+    #La ruta del volumen debe apuntar a la carpeta que contiene los datos de la base de datos
+    volumes:
+      - ./Agenda-DB/data:/var/lib/mysql
+    # #Variables de entorno  para el contenedor
+    environment:
+      - MYSQL_ROOT_PASSWORD=Rivilla1940
+      - MYSQL_USER=rivilla
+      - MYSQL_PASSWORD=Rivilla1940
+    restart: always
+    networks:
+      - agenda-app
+
+  # Contenedor para el servidor laravel
+  agenda-server:
+    # La imagen del contenedor se construye sobre una adecuando las necesidades
+    build: ./Agenda-Servidor
+    # Nombre asignado al contenedor
+    container_name: agenda-server
+    depends_on:
+      - agenda-db
+    ports:
+      - 8001:80
+    # Se mapea la carpeta con una local
+    volumes:
+      - ./Agenda-Servidor:/var/www/html/
+    restart: always
+    networks:
+      - agenda-app
+
+  # Crea un contenedor con la api de la aplicación
+  agenda-client:
+    # La imagen del contenedor se construye sobre una adecuando las necesidades
+    build: ./Agenda-Cliente
+    # Nombre asignado al contenedor
+    container_name: agenda-client
+    # Para la versión de desarrollo se mapea la carpeta con una local
+    ports:
+      - 80:4200
+    volumes:
+      - ./Agenda-Cliente:/usr/src/app
+    restart: always
+    networks:
+      - agenda-app
+
+networks:
+  agenda-app:
+    driver: bridge

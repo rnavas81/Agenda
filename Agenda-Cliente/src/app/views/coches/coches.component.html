@@ -1,0 +1,60 @@
+<!-- Cabecera -->
+<app-header [selected]="this.entities"></app-header>
+<!-- Toast -->
+<app-toast [toast]="this.toast"></app-toast>
+<!-- Barra de herramientas -->
+<nav id="toolbar" class="btn-toolbar bg-dark justify-content-between p-2 d-flex sticky-top z-index-400">
+    <div class="btn-group">
+    </div>
+    <div class="btn-group d-flex">
+        <p class="align-self-center m-0 font-weight-bold text-light text-uppercase">{{labels[entities]}}</p>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-sm btn-light" title="{{labels.action('add',this.entity)}}"
+            [routerLink]="'/'+this.entity">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+</nav>
+<!-- Cuerpo -->
+<main class="container-fluid contenido">
+    <div *ngFor="let item of datos" class="row my-2 border-bottom px-1">
+        <div class="col-10 text-uppercase">
+            {{item.matricula}}
+        </div>
+        <div class="col-2 align-self-center">
+            <div class="float-right">
+                <button type="submit" class="btn btn-secondary mx-2" title="{{labels.action('edit',this.entity)}}"
+                    [routerLink]="['/'+this.entity,item.id]">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
+                <button type="submit" class="btn btn-danger mx-2" title="{{labels.action('remove',this.entity)}}"
+                    (click)="seleccionar(item.id);borrarModal.show();">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- MODAL BORRAR -->
+<div mdbModal #borrarModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel"
+    aria-hidden="true" (onHide)="seleccionar();">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{labels.action('remove',this.entity)}}</h5>
+            </div>
+            <div class="modal-body">
+                <p>Va a eliminar esta entrada<br>¿Desea continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="this.eliminar()" data-dismiss="modal">
+                    SI
+                </button>
+                <button id="borrar-modal-close" type="button" class="btn btn-secondary" (click)="borrarModal.hide()">
+                    NO
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
